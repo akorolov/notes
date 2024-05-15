@@ -20,12 +20,11 @@
 
 	const options = {
 		includeScore: true,
+		ignoreLocation: true,
 		keys: ['title', 'plaintext', 'tags']
 	}
 
 	let fuse = new Fuse($noteList, options)
-
-	$: console.log("notes shown just changed", notes_shown)
 
 	let selected_date: Date = new Date()
 
@@ -36,12 +35,8 @@
 
 	$: search_value, Search(search_value)
 
-	$: notes_shown, console.log("test")
-
 	function UpdateMaybe() {
-		console.log("updating maybe")
 		let newList = UpdateNote(active_note.id, $noteList, active_note.title, active_note.content, active_note.tags, active_note.plaintext)
-		console.log("newlist", newList)
 		$noteList = newList
 		if (search_value == "") {
 			notes_shown = $noteList
@@ -79,14 +74,12 @@
 			return;
 		}
 		const result = fuse.search(search_term);
-		console.log("result: ", result)
 		let new_list: Note[] = []
 		for (let x of result) {
 			new_list.push(x.item)
 		}
 		notes_shown = new_list
 		active_note = notes_shown[0]
-		console.log("notes shown: ", notes_shown)
 	}
 
 </script>
@@ -131,7 +124,7 @@
 							<div class="flex flex-row justify-between">
 								<div class="flex flex-col">
 									{note.title} 
-									<span class="italic text-xs">{note.plaintext.substring(0,48)}...</span>
+									<span class="italic text-xs">{note.plaintext.substring(0,48)}{(note.plaintext.length > 48) ? '...' : ''}</span>
 									<span class="italic text-xs mt-1 opacity-75">{(note.updated instanceof Date) ? note.updated.toDateString() : new Date(Date.parse(note.updated)).toDateString()}</span>
 								</div>
 								<div class="flex flex-col justify-center">
