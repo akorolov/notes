@@ -133,7 +133,7 @@
     <input class="input bg-surface-50 h3" type="text" bind:value={title} placeholder="Title" />
     <div class="text-xs italic mb-1 ml-1">Created {created.toLocaleString([], {hour: '2-digit', minute:'2-digit', day: '2-digit', month: 'numeric', year: '2-digit'})} <span class="divider-vertical h-1" /> Updated {updated.toLocaleString([], {hour: '2-digit', minute:'2-digit', month: 'numeric', year: '2-digit', day: '2-digit'})}</div>
 
-    <div id="editor-buttons" class="flex flex-row gap-1">
+    <div id="editor-buttons" class="flex flex-row flex-wrap gap-1">
   
         {#if editor}
 
@@ -163,9 +163,29 @@
                     format_italic
                     </span>
             </button>
+            <button class="chip p-1 {editor.isActive("italic") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => editor.chain().focus().toggleItalic().run()} > <span class="material-symbols-outlined text-2xl">
+                    format_underlined
+                    </span>
+            </button>
+            <button class="chip p-1 {editor.isActive("italic") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => editor.chain().focus().toggleItalic().run()} > <span class="material-symbols-outlined text-2xl">
+                    subscript
+                    </span>
+            </button>
+            <button class="chip p-1 {editor.isActive("italic") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => editor.chain().focus().toggleItalic().run()} > <span class="material-symbols-outlined text-2xl">
+                    superscript
+                    </span>
+            </button>
             <button class="chip p-1 {editor.isActive("highlight") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
                 on:click={() => editor.chain().focus().toggleHighlight().run()} > <span class="material-symbols-outlined text-2xl">
                     format_ink_highlighter
+                    </span>
+            </button>
+            <button class="chip p-1 {editor.isActive("highlight") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => editor.chain().focus().toggleHighlight().run()} > <span class="material-symbols-outlined text-2xl">
+                    format_color_text
                     </span>
             </button>
             <span class="divider-vertical h-10 m-1" />
@@ -198,6 +218,16 @@
             <button class="chip p-1 {editor.isActive("taskList") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
                 on:click={() => editor.chain().focus().toggleTaskList().run()} > <span class="material-symbols-outlined text-2xl">
                     checklist
+                    </span>
+            </button>
+            <button class="chip p-1 {editor.isActive("taskList") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => editor.chain().focus().toggleTaskList().run()} > <span class="material-symbols-outlined text-2xl">
+                    format_quote
+                    </span>
+            </button>
+            <button class="chip p-1 {editor.isActive("taskList") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => editor.chain().focus().toggleTaskList().run()} > <span class="material-symbols-outlined text-2xl">
+                    code_blocks
                     </span>
             </button>
 
