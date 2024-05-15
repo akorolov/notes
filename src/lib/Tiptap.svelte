@@ -10,6 +10,11 @@
     import OrderedList from '@tiptap/extension-ordered-list';
     import BulletList from '@tiptap/extension-bullet-list';
     import ListItem from '@tiptap/extension-list-item';
+    import Blockquote from '@tiptap/extension-blockquote';
+    import Subscript from '@tiptap/extension-subscript';
+    import Superscript from '@tiptap/extension-superscript';
+    import Underline from '@tiptap/extension-underline';
+    import CodeBlock from '@tiptap/extension-code-block';
 
   
     let element: Element
@@ -25,7 +30,7 @@
 
     let paragraph_style = "P"
 
-    let paragraph_styles = ["H1", "H2", "H3", "H4", "P"]
+    let paragraph_styles = ["H1", "H2", "H3", "H4", "P", "Code"]
 
     let styles_readable = {
         "H1": "Heading 1",
@@ -33,6 +38,7 @@
         "H3": "Heading 3",
         "H4": "Heading 4",
         "P": "Paragraph",
+        "Code": "Code",
     }
   
     onMount(() => {
@@ -46,6 +52,19 @@
         extensions: [
             StarterKit,
             Highlight,
+            Subscript,
+            Superscript,
+            Underline,
+            CodeBlock.configure({
+                HTMLAttributes: {
+                    class: 'bg-surface-900 text-surface-50 px-3 py-3 rounded-lg text-sm mb-3',
+                }
+            }),
+            Blockquote.configure({
+                HTMLAttributes: {
+                    class: 'border-l-4 border-surface-300 bg-surface-100 pl-4 italic text-surface-500 my-4 py-1',
+                },
+            }),
             OrderedList.configure({
                 HTMLAttributes: {
                     class: 'list-decimal ml-4',
@@ -116,6 +135,9 @@
             case "P":
                 editor.chain().focus().setParagraph().run()
                 break
+            case "Code":
+                editor.chain().focus().toggleCodeBlock().run()
+                break
         }
     }
 
@@ -125,6 +147,13 @@
         if (editor.isActive("heading", { level: 3 })) paragraph_style = "H3";
         if (editor.isActive("heading", { level: 4 })) paragraph_style = "H4";
         if (editor.isActive("paragraph")) paragraph_style = "P";
+        if (editor.isActive("codeBlock")) paragraph_style = "Code";
+    }
+
+    function clearStyles() {
+        editor.chain().focus().toggleHeading({ level: 4}).run();
+        editor.chain().focus().setParagraph().run();
+        editor.chain().focus().unsetBlockquote().run();
     }
 
   </script>
@@ -163,18 +192,18 @@
                     format_italic
                     </span>
             </button>
-            <button class="chip p-1 {editor.isActive("italic") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
-                on:click={() => editor.chain().focus().toggleItalic().run()} > <span class="material-symbols-outlined text-2xl">
+            <button class="chip p-1 {editor.isActive("underline") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => editor.chain().focus().toggleUnderline().run()} > <span class="material-symbols-outlined text-2xl">
                     format_underlined
                     </span>
             </button>
-            <button class="chip p-1 {editor.isActive("italic") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
-                on:click={() => editor.chain().focus().toggleItalic().run()} > <span class="material-symbols-outlined text-2xl">
+            <button class="chip p-1 {editor.isActive("subscript") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => editor.chain().focus().toggleSubscript().run()} > <span class="material-symbols-outlined text-2xl">
                     subscript
                     </span>
             </button>
-            <button class="chip p-1 {editor.isActive("italic") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
-                on:click={() => editor.chain().focus().toggleItalic().run()} > <span class="material-symbols-outlined text-2xl">
+            <button class="chip p-1 {editor.isActive("superscript") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => editor.chain().focus().toggleSuperscript().run()} > <span class="material-symbols-outlined text-2xl">
                     superscript
                     </span>
             </button>
@@ -206,28 +235,23 @@
             </button>
             <span class="divider-vertical h-10 m-1" />
             <button class="chip p-1 {editor.isActive("bulletList") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
-                on:click={() => editor.chain().focus().toggleBulletList().run()} > <span class="material-symbols-outlined text-2xl">
+                on:click={() => {clearStyles(); editor.chain().focus().toggleBulletList().run()}} > <span class="material-symbols-outlined text-2xl">
                     format_list_bulleted
                     </span>
             </button>
             <button class="chip p-1 {editor.isActive("orderedList") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
-                on:click={() => editor.chain().focus().toggleOrderedList().run()} > <span class="material-symbols-outlined text-2xl">
+                on:click={() => {clearStyles(); editor.chain().focus().toggleOrderedList().run()}} > <span class="material-symbols-outlined text-2xl">
                     format_list_numbered
                     </span>
             </button>
             <button class="chip p-1 {editor.isActive("taskList") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
-                on:click={() => editor.chain().focus().toggleTaskList().run()} > <span class="material-symbols-outlined text-2xl">
+                on:click={() => {clearStyles(); editor.chain().focus().toggleTaskList().run()}} > <span class="material-symbols-outlined text-2xl">
                     checklist
                     </span>
             </button>
-            <button class="chip p-1 {editor.isActive("taskList") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
-                on:click={() => editor.chain().focus().toggleTaskList().run()} > <span class="material-symbols-outlined text-2xl">
+            <button class="chip p-1 {editor.isActive("blockquote") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => {clearStyles(); editor.chain().focus().toggleBlockquote().run()}} > <span class="material-symbols-outlined text-2xl">
                     format_quote
-                    </span>
-            </button>
-            <button class="chip p-1 {editor.isActive("taskList") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
-                on:click={() => editor.chain().focus().toggleTaskList().run()} > <span class="material-symbols-outlined text-2xl">
-                    code_blocks
                     </span>
             </button>
 

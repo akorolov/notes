@@ -2,12 +2,13 @@
 	import Calendar from '$lib/Calendar.svelte';
     import Settings from '$lib/Settings.svelte';
 	import Tiptap from '$lib/Tiptap.svelte'
-	import { noteList, CreateNewNote, UpdateNote, DeleteNote, GetNotesByUpdatedDate } from '$lib/noteStore';
+	import { noteList, CreateNewNote, UpdateNote, DeleteNote, GetNotesByUpdatedDate, GetNotesByCreatedDate } from '$lib/noteStore';
 	import type { Note } from '$lib/noteStore';
     import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
 	import { popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	import Fuse from 'fuse.js'
+	import { calendar_setting } from '$lib/settingStore';
 
 	let notes_shown = $noteList
 	let active_note: Note = notes_shown[0]
@@ -29,7 +30,7 @@
 
 	let selected_date: Date = new Date()
 
-	$: selected_date, (calendar_open) ? notes_shown = GetNotesByUpdatedDate(selected_date, $noteList) : null
+	$: selected_date, (calendar_open) ? (($calendar_setting == "updated") ? notes_shown = GetNotesByUpdatedDate(selected_date, $noteList) : notes_shown = GetNotesByCreatedDate(selected_date, $noteList)) : null
 	$: calendar_open, (!calendar_open) ? notes_shown = $noteList : null
 
 	$: active_note, UpdateMaybe()
@@ -89,23 +90,32 @@
 	<div class="grid grid-cols-3 card m-4">
 		<div class="col-span-1 p-2">
 
-			<div class="card p-3 max-w-sm z-50" data-popup="popupCloseQuery">
-				<div class="grid grid-cols-1 gap-2">
-					<button id="will-close" class="btn variant-soft-error" on:click={() => {$noteList = DeleteNote(note_option_id, $noteList); (active_note.id == note_option_id) ? active_note = notes_shown[0] : null}}>Delete Note</button>
+			<div class="card p-0 max-w-sm z-50" data-popup="popupCloseQuery">
+				<div class="flex flex-col gap-0 z-40">
+					<button id="will-close" class="btn variant-glass-surface" on:click={() => {}}> <span class="material-symbols-outlined mr-1">
+						keep
+						</span> Pin</button>
+					<button id="will-close" class="btn variant-glass-surface" on:click={() => {$noteList = DeleteNote(note_option_id, $noteList); (active_note.id == note_option_id) ? active_note = notes_shown[0] : null}}><span class="material-symbols-outlined mr-1">
+						delete
+						</span> Delete</button>
 				</div>
-				<div class="arrow bg-surface-100-800-token" />
+				<div class="arrow bg-surface-300-600-token variant-glass-surface z-30" />
 			</div>
 
-			
+			<input type="search" class="input variant-glass-surface rounded-full mt-2 ml-1" bind:value={search_value} placeholder="Search..." />
+
 				<div id="nav_buttons" class="my-2 flex flex-row justify-end gap-1">
 						<!-- <div class=""><span class="material-symbols-outlined p-0">
 							search
 							</span></div> -->
-						<input type="search" class="input" bind:value={search_value} placeholder="Search..." />
-					<button class="btn-icon rounded {(calendar_open) ? 'variant-filled' : 'bg-transparent hover:variant-soft'}" on:click={() => {calendar_open = !calendar_open; settings_open = false;}}><span class="material-symbols-outlined">
+						
+					<button class="btn-icon rounded {(filter_open) ? 'variant-filled' : 'bg-transparent hover:variant-soft'}" on:click={() => {filter_open = !filter_open; settings_open = false; calendar_open = false;}}><span class="material-symbols-outlined">
+						tune
+						</span></button>
+					<button class="btn-icon rounded {(calendar_open) ? 'variant-filled' : 'bg-transparent hover:variant-soft'}" on:click={() => {calendar_open = !calendar_open; settings_open = false; filter_open = false;}}><span class="material-symbols-outlined">
 						calendar_month
 						</span></button>
-					<button class="btn-icon rounded {(settings_open) ? 'variant-filled' : 'bg-transparent hover:variant-soft'}" on:click={() => {settings_open = !settings_open; calendar_open = false;}}><span class="material-symbols-outlined">
+					<button class="btn-icon rounded {(settings_open) ? 'variant-filled' : 'bg-transparent hover:variant-soft'}" on:click={() => {settings_open = !settings_open; calendar_open = false; filter_open = false;}}><span class="material-symbols-outlined">
 						settings
 						</span></button>
 					<button class="btn-icon rounded bg-transparent hover:variant-soft" on:click={NewNote}><span class="material-symbols-outlined">
@@ -118,27 +128,27 @@
 					<Settings />
 				{/if}
 				<div style="max-height: 88vh; overflow: scroll;">
-				<ListBox>
-					{#each notes_shown as note}
-						<ListBoxItem bind:group={active_note} on:click={SwitchNote} name="note" value={note}>
-							<div class="flex flex-row justify-between">
-								<div class="flex flex-col">
-									{note.title} 
-									<span class="italic text-xs">{note.plaintext.substring(0,48)}{(note.plaintext.length > 48) ? '...' : ''}</span>
-									<span class="italic text-xs mt-1 opacity-75">{(note.updated instanceof Date) ? note.updated.toDateString() : new Date(Date.parse(note.updated)).toDateString()}</span>
+					<ListBox>
+						{#each notes_shown as note}
+							<ListBoxItem bind:group={active_note} on:click={SwitchNote} name="note" value={note}>
+								<div class="flex flex-row justify-between">
+									<div class="flex flex-col">
+										{note.title} 
+										<span class="italic text-xs">{note.plaintext.substring(0,48)}{(note.plaintext.length > 48) ? '...' : ''}</span>
+										<span class="italic text-xs mt-1 opacity-75">{(note.updated instanceof Date) ? note.updated.toDateString() : new Date(Date.parse(note.updated)).toDateString()}</span>
+									</div>
+									<div class="flex flex-col justify-center">
+										<button class="btn-icon bg-transparent hover:variant-filled rounded-full h-8" use:popup={popupCloseQuery} on:click={() => OpenNoteOptions(note.id)}><span class="material-symbols-outlined">
+											more_horiz
+											</span></button>
+									</div>
+									
 								</div>
-								<div class="flex flex-col justify-center">
-									<button class="btn-icon bg-transparent hover:variant-filled rounded h-6" use:popup={popupCloseQuery} on:click={() => OpenNoteOptions(note.id)}><span class="material-symbols-outlined">
-										more_horiz
-										</span></button>
-								</div>
-								
-							</div>
-						</ListBoxItem>
-					{/each}
-					
-				</ListBox>
-			</div>
+							</ListBoxItem>
+						{/each}
+						
+					</ListBox>
+				</div>
 			
 		</div>
 		<div class="flex flex-col col-span-2 p-2 items-center">

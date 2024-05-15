@@ -80,8 +80,29 @@ export function GetNotesByUpdatedDate(date: Date, notelist: Note[]) {
 export function GetNotesByCreatedDate(date: Date, notelist: Note[]) {
     let new_note_list: Note[] = []
     notelist.forEach(note => {
+        (typeof(note.created) == "string") ? note.created = new Date(Date.parse(note.created)) : null
         if (note.created.getFullYear() == date.getFullYear() && note.created.getMonth() == date.getMonth() && note.created.getDate() == date.getDate()) new_note_list.push(note)
     })
     return new_note_list
 }
 
+export function GetNoteDates(type: "created" | "updated", notelist: Note[]) {
+    let date_list: Date[] = []
+    for (let note of notelist) {
+        if (type == "created") {
+            if (typeof(note.created) == "string") {
+                date_list.push(new Date(Date.parse(note.created)))
+            } else {
+                date_list.push(note.created)
+            }
+        } else if (type == "updated") {
+            if (typeof(note.updated) == "string") {
+                date_list.push(new Date(Date.parse(note.updated)))
+            } else {
+                date_list.push(note.updated)
+            }
+        }
+        
+    }
+    return date_list
+}
