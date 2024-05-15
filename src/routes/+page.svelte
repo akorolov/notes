@@ -14,6 +14,7 @@
 
 	let editor_open = true
 	let calendar_open = false
+	let filter_open = false
 	let settings_open = false
 	let note_option_id = 0
 	let search_value = ""
@@ -38,7 +39,7 @@
 	function UpdateMaybe() {
 		let newList = UpdateNote(active_note.id, $noteList, active_note.title, active_note.content, active_note.tags, active_note.plaintext)
 		$noteList = newList
-		if (search_value == "") {
+		if (search_value == "" && !calendar_open && !filter_open) {
 			notes_shown = $noteList
 			fuse = new Fuse($noteList, options)
 		}
