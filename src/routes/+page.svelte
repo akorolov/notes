@@ -44,8 +44,6 @@
 			fuse = new Fuse($noteList, options)
 		}
 	}
-	
-
 
 	function NewNote() {
 		$noteList = CreateNewNote($noteList)
