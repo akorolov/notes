@@ -3,6 +3,9 @@
     import { Editor } from '@tiptap/core'
     import StarterKit from '@tiptap/starter-kit'
     import { InputChip } from '@skeletonlabs/skeleton';
+    import Highlight from '@tiptap/extension-highlight'
+    import TextAlign from '@tiptap/extension-text-align'
+
   
     let element: Element
     let editor: Editor
@@ -10,6 +13,8 @@
     export let tags: string[]
     export let plain_text: string
     export let title: string
+    export let updated: Date
+    export let created: Date
 
 
 
@@ -34,7 +39,11 @@
             },
         },
         extensions: [
-          StarterKit,
+            StarterKit,
+            Highlight,
+            TextAlign.configure({
+                types: ['heading', 'paragraph'],
+            }),
         ],
         content: content,
         onTransaction: () => {
@@ -94,7 +103,8 @@
   </script>
 
   <div class="w-full card rounded p-2 bg-surface-200 flex flex-col gap-2">
-    <input class="input bg-surface-50 h3 mb-1" type="text" bind:value={title} placeholder="Title" />
+    <input class="input bg-surface-50 h3" type="text" bind:value={title} placeholder="Title" />
+    <div class="text-xs italic mb-1 ml-1">Created {created.toLocaleString([], {hour: '2-digit', minute:'2-digit', day: '2-digit', month: 'numeric', year: '2-digit'})} <span class="divider-vertical h-1" /> Updated {updated.toLocaleString([], {hour: '2-digit', minute:'2-digit', month: 'numeric', year: '2-digit', day: '2-digit'})}</div>
 
     <div id="editor-buttons" class="flex flex-row gap-1">
   
@@ -124,6 +134,27 @@
             <button class="chip p-1 {editor.isActive("italic") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
                 on:click={() => editor.chain().focus().toggleItalic().run()} > <span class="material-symbols-outlined text-2xl">
                     format_italic
+                    </span>
+            </button>
+            <button class="chip p-1 {editor.isActive("highlight") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => editor.chain().focus().toggleHighlight().run()} > <span class="material-symbols-outlined text-2xl">
+                    format_ink_highlighter
+                    </span>
+            </button>
+            <span class="divider-vertical h-10 m-1" />
+            <button class="chip p-1 {editor.isActive({ textAlign: 'left' }) ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => editor.chain().focus().setTextAlign('left').run()} > <span class="material-symbols-outlined text-2xl">
+                    format_align_left
+                    </span>
+            </button>
+            <button class="chip p-1 {editor.isActive({ textAlign: 'center' }) ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => editor.chain().focus().setTextAlign('center').run()} > <span class="material-symbols-outlined text-2xl">
+                    format_align_center
+                    </span>
+            </button>
+            <button class="chip p-1 {editor.isActive({ textAlign: 'right' }) ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => editor.chain().focus().setTextAlign('right').run()} > <span class="material-symbols-outlined text-2xl">
+                    format_align_right
                     </span>
             </button>
 

@@ -143,9 +143,9 @@
 		</div>
 		<div class="flex flex-col col-span-2 p-2 items-center">
 			{#if editor_open && active_note.content}
-				<Tiptap bind:content={active_note.content} bind:tags={active_note.tags} bind:plain_text={active_note.plaintext} bind:title={active_note.title} />
+				<Tiptap bind:content={active_note.content} bind:tags={active_note.tags} bind:plain_text={active_note.plaintext} bind:title={active_note.title} created={(active_note.created instanceof Date) ? active_note.created : new Date(Date.parse(active_note.created))} updated={(active_note.updated instanceof Date) ? active_note.updated : new Date(Date.parse(active_note.updated))} />
 			{:else}
-				<Tiptap content={''} tags={[]} plain_text={''} title={''} />
+				<Tiptap content={''} tags={[]} plain_text={''} title={''} created={new Date()} updated={new Date()} />
 			{/if}
 		</div>
 	</div>
