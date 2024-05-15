@@ -5,7 +5,7 @@
     import { InputChip } from '@skeletonlabs/skeleton';
   
     let element: Element
-    export let editor: Editor
+    let editor: Editor
     export let content: string
     export let tags: string[]
 
