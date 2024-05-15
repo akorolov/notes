@@ -2,10 +2,12 @@
     import { onMount, onDestroy } from 'svelte'
     import { Editor } from '@tiptap/core'
     import StarterKit from '@tiptap/starter-kit'
+    import { InputChip } from '@skeletonlabs/skeleton';
   
     let element: Element
     export let editor: Editor
     export let content: string
+    export let tags: string[]
 
     let paragraph_style = "P"
 
@@ -124,6 +126,7 @@
     </div>
   
   <div id="editor-body" class="textarea p-2 bg-surface-50 my-2" bind:this={element} />
+  <InputChip bind:value={tags} name="tags" placeholder="Add a tag..." />
 
 </div>
   
