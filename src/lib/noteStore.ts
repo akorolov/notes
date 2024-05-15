@@ -11,20 +11,21 @@ export class Note {
     "id": number;
 }
 
-export const noteList = persisted("notelist1", [new Note()])
-export const maxID = persisted("maxNoteID1", 0)
+export const maxID = persisted("maxNoteID5", 0)
+export const noteList = persisted("notelist5", CreateNewNote([]))
 
-export function CreateNewNote(title: string, content: string, tags: string[], plaintext: string, notelist: Note[]) {
+
+export function CreateNewNote(notelist: Note[]) {
     let new_note = new Note()
-    new_note.content = content
-    new_note.title = title
-    new_note.plaintext = plaintext
+    new_note.content = "New note"
+    new_note.title = "New note"
+    new_note.plaintext = "New note"
     new_note.created = new Date()
     new_note.updated = new Date()
-    new_note.tags = tags
+    new_note.tags = []
     new_note.id = get(maxID) + 1
-    maxID.set(new_note.id + 1)
-    return [...notelist, new_note]
+    maxID.set(new_note.id)
+    return [new_note, ...notelist]
 }
 
 export function UpdateNote(note_id: number, notelist: Note[], title?: string, content?: string, tags?: string[], plaintext?:string) {
@@ -50,6 +51,9 @@ export function DeleteNote(note_id: number, notelist: Note[]) {
     notelist.forEach(note => {
         if (note.id !== note_id) new_note_list.push(note)
     })
+    if (new_note_list.length == 0) {
+        new_note_list = CreateNewNote(new_note_list)
+    }
     return new_note_list
 }
 
@@ -57,6 +61,7 @@ export function DeleteNote(note_id: number, notelist: Note[]) {
 export function GetNotesByUpdatedDate(date: Date, notelist: Note[]) {
     let new_note_list: Note[] = []
     notelist.forEach(note => {
+        (typeof(note.updated) == "string") ? note.updated = new Date(Date.parse(note.updated)) : null
         if (note.updated.getFullYear() == date.getFullYear() && note.updated.getMonth() == date.getMonth() && note.updated.getDate() == date.getDate()) new_note_list.push(note)
     })
     return new_note_list

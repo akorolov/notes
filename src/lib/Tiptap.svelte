@@ -8,6 +8,9 @@
     let editor: Editor
     export let content: string
     export let tags: string[]
+    export let plain_text: string
+    export let title: string
+
 
     let paragraph_style = "P"
 
@@ -41,6 +44,7 @@
         onUpdate: () => {
             // when content has changed
             content = editor.getHTML()
+            plain_text = editor.getText()
         },
 
 
@@ -88,7 +92,8 @@
 
   </script>
 
-  <div class="max-w-xl w-full card rounded p-2 bg-surface-200">
+  <div class="w-full card rounded p-2 bg-surface-200 flex flex-col gap-2">
+    <input class="input bg-surface-50 h3 mb-1" type="text" bind:value={title} placeholder="Title" />
 
     <div id="editor-buttons" class="flex flex-row gap-1">
   
@@ -125,7 +130,7 @@
 
     </div>
   
-  <div id="editor-body" class="textarea p-2 bg-surface-50 my-2" bind:this={element} />
+  <div id="editor-body" class="textarea p-2 bg-surface-50 overflow-auto" style="max-height: 70vh;" bind:this={element} />
   <InputChip bind:value={tags} name="tags" placeholder="Add a tag..." />
 
 </div>
