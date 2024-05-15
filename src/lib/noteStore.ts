@@ -11,8 +11,8 @@ export class Note {
     "id": number;
 }
 
-export const maxID = persisted("maxNoteID5", 0)
-export const noteList = persisted("notelist5", CreateNewNote([]))
+export const maxID = persisted("maxNoteID6", 0)
+export const noteList = persisted("notelist6", CreateNewNote([]))
 
 
 export function CreateNewNote(notelist: Note[]) {
@@ -30,18 +30,27 @@ export function CreateNewNote(notelist: Note[]) {
 
 export function UpdateNote(note_id: number, notelist: Note[], title?: string, content?: string, tags?: string[], plaintext?:string) {
     let new_note_list: Note[] = []
-    notelist.forEach(note => {
+    for (let note of notelist) {
         if (note.id == note_id) {
-            if (title) note.title = title
-            if (content) note.content = content
-            if (tags) note.tags = tags
-            if (plaintext) note.plaintext = plaintext
-            note.updated = new Date()
-            new_note_list.push(note)
-        } else {
-            new_note_list.push(note)
+            if (title) {
+                note.updated = new Date()
+                note.title = title
+            }
+            if (content) {
+                note.updated = new Date()
+                note.content = content
+            }
+            if (tags) {
+                note.updated = new Date()
+                note.tags = tags
+            }
+            if (plaintext) {
+                note.updated = new Date()
+                note.plaintext = plaintext
+            }
         }
-    });
+        new_note_list.push(note)
+    }
     return new_note_list
 }
 
