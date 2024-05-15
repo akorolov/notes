@@ -5,6 +5,11 @@
     import { InputChip } from '@skeletonlabs/skeleton';
     import Highlight from '@tiptap/extension-highlight'
     import TextAlign from '@tiptap/extension-text-align'
+    import TaskItem from '@tiptap/extension-task-item'
+    import TaskList from '@tiptap/extension-task-list'
+    import OrderedList from '@tiptap/extension-ordered-list';
+    import BulletList from '@tiptap/extension-bullet-list';
+    import ListItem from '@tiptap/extension-list-item';
 
   
     let element: Element
@@ -41,8 +46,30 @@
         extensions: [
             StarterKit,
             Highlight,
+            OrderedList.configure({
+                HTMLAttributes: {
+                    class: 'list-decimal ml-4',
+                }
+            }),
+            BulletList.configure({
+                HTMLAttributes: {
+                    class: 'list-disc ml-4',
+                }
+            }),
+            ListItem,
             TextAlign.configure({
                 types: ['heading', 'paragraph'],
+            }),
+            TaskList.configure({
+                HTMLAttributes: {
+                    class: 'checklistHere',
+                },
+            }),
+            TaskItem.configure({
+                nested: true,
+                HTMLAttributes: {
+                    class: 'flex flex-row gap-2',
+                },
             }),
         ],
         content: content,
@@ -157,6 +184,22 @@
                     format_align_right
                     </span>
             </button>
+            <span class="divider-vertical h-10 m-1" />
+            <button class="chip p-1 {editor.isActive("bulletList") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => editor.chain().focus().toggleBulletList().run()} > <span class="material-symbols-outlined text-2xl">
+                    format_list_bulleted
+                    </span>
+            </button>
+            <button class="chip p-1 {editor.isActive("orderedList") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => editor.chain().focus().toggleOrderedList().run()} > <span class="material-symbols-outlined text-2xl">
+                    format_list_numbered
+                    </span>
+            </button>
+            <button class="chip p-1 {editor.isActive("taskList") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+                on:click={() => editor.chain().focus().toggleTaskList().run()} > <span class="material-symbols-outlined text-2xl">
+                    checklist
+                    </span>
+            </button>
 
         {/if}
 
@@ -167,12 +210,3 @@
 
 </div>
   
-  <style>
-
-    #editor-body {
-
-    }
-
-
-
-  </style>
