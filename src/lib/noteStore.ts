@@ -106,3 +106,23 @@ export function GetNoteDates(type: "created" | "updated", notelist: Note[]) {
     }
     return date_list
 }
+
+export function GetAllTags(notelist: Note[]) {
+    let tags: string[] = []
+    for (let note of notelist) {
+        tags = [...tags, ...note.tags]
+    }
+    let tag_set = new Set(tags);
+    return Array.from(tag_set);
+}
+
+export function FilterNotesByTags(tags: string[], notelist: Note[]) {
+    if (tags.length == 0) {
+        return notelist
+    }
+    let new_list: Note[] = []
+    for (let note of notelist) {
+        if (tags.every(item => note.tags.includes(item))) new_list = [...new_list, note]
+    }
+    return new_list
+}

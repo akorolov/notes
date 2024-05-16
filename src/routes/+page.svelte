@@ -2,13 +2,14 @@
 	import Calendar from '$lib/Calendar.svelte';
     import Settings from '$lib/Settings.svelte';
 	import Tiptap from '$lib/Tiptap.svelte'
-	import { noteList, CreateNewNote, UpdateNote, DeleteNote, GetNotesByUpdatedDate, GetNotesByCreatedDate } from '$lib/noteStore';
+	import { noteList, CreateNewNote, UpdateNote, DeleteNote, GetNotesByUpdatedDate, GetNotesByCreatedDate, FilterNotesByTags } from '$lib/noteStore';
 	import type { Note } from '$lib/noteStore';
-    import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
+    import { ListBox, ListBoxItem, filter } from '@skeletonlabs/skeleton';
 	import { popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	import Fuse from 'fuse.js'
 	import { calendar_setting } from '$lib/settingStore';
+    import Filter from '$lib/Filter.svelte';
 
 	let notes_shown = $noteList
 	let active_note: Note = notes_shown[0]
@@ -19,6 +20,7 @@
 	let settings_open = false
 	let note_option_id = 0
 	let search_value = ""
+	let filter_tags: string[] = []
 
 	const options = {
 		includeScore: true,
@@ -32,6 +34,9 @@
 
 	$: selected_date, (calendar_open) ? (($calendar_setting == "updated") ? notes_shown = GetNotesByUpdatedDate(selected_date, $noteList) : notes_shown = GetNotesByCreatedDate(selected_date, $noteList)) : null
 	$: calendar_open, (!calendar_open) ? notes_shown = $noteList : null
+	$: filter_open, (!filter_open) ? notes_shown = $noteList : null
+	$: filter_open, (!filter_open) ? filter_tags = [] : null
+	$: filter_tags, (filter_open) ? notes_shown = FilterNotesByTags(filter_tags, $noteList) : null
 
 	$: active_note, UpdateMaybe()
 
@@ -43,6 +48,10 @@
 		if (search_value == "" && !calendar_open && !filter_open) {
 			notes_shown = $noteList
 			fuse = new Fuse($noteList, options)
+		}
+		if (filter_open) {
+			notes_shown = FilterNotesByTags(filter_tags, $noteList)
+			fuse = new Fuse(notes_shown, options)
 		}
 	}
 
@@ -124,6 +133,8 @@
 				</div>
 				{#if calendar_open}
 					<Calendar bind:selected_date={selected_date} />
+				{:else if filter_open}
+					<Filter notelist={notes_shown} bind:filter_tags={filter_tags} />
 				{:else if settings_open}
 					<Settings />
 				{/if}
@@ -135,7 +146,7 @@
 									<div class="flex flex-col">
 										{note.title} 
 										<span class="italic text-xs">{note.plaintext.substring(0,48)}{(note.plaintext.length > 48) ? '...' : ''}</span>
-										<span class="italic text-xs mt-1 opacity-75">{(note.updated instanceof Date) ? note.updated.toDateString() : new Date(Date.parse(note.updated)).toDateString()}</span>
+										<span class="italic text-xs mt-1 opacity-75">{(note.updated instanceof Date) ? note.updated.toLocaleString([], {hour: '2-digit', minute:'2-digit', month: 'numeric', year: '2-digit', day: '2-digit'}) : new Date(Date.parse(note.updated)).toLocaleString([], {hour: '2-digit', minute:'2-digit', month: 'numeric', year: '2-digit', day: '2-digit'})}</span>
 									</div>
 									<div class="flex flex-col justify-center">
 										<button class="btn-icon bg-transparent hover:variant-filled rounded-full h-8" use:popup={popupCloseQuery} on:click={() => OpenNoteOptions(note.id)}><span class="material-symbols-outlined">
