@@ -10,6 +10,7 @@
 	import Fuse from 'fuse.js'
 	import { calendar_setting } from '$lib/settingStore';
     import Filter from '$lib/Filter.svelte';
+	import "$lib/database";
 
 	let notes_shown = $noteList
 	let active_note: Note = notes_shown[0]
