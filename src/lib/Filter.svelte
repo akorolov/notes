@@ -5,7 +5,7 @@ import { GetAllTags, type Note } from "./noteStore";
 
 export let filter_tags: string[] = []
 export let notelist: Note[] = []
-export let has_list = []
+export let has_list: string[] = []
 
 let input_tag = ''
 
@@ -15,7 +15,7 @@ let all_tags: string[] = GetAllTags(notelist)
 
 <div class="flex flex-col p-2 gap-2">
     <span class="flex flex-row gap-4 justify-between mb-1">
-        <span class="h5">Has: </span>
+        <span class="h5">Contains: </span>
         <span>
             <button class="chip variant-soft">Todo</button>
             <button class="chip variant-soft">Table</button>

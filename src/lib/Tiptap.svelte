@@ -212,11 +212,11 @@
                     format_ink_highlighter
                     </span>
             </button>
-            <button class="chip p-1 {editor.isActive("highlight") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
+            <!-- <button class="chip p-1 {editor.isActive("highlight") ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
                 on:click={() => editor.chain().focus().toggleHighlight().run()} > <span class="material-symbols-outlined text-2xl">
                     format_color_text
                     </span>
-            </button>
+            </button> -->
             <span class="divider-vertical h-10 m-1" />
             <button class="chip p-1 {editor.isActive({ textAlign: 'left' }) ? 'variant-filled' : 'variant-soft'}" style="margin: 0px; border-radius: 1px;"
                 on:click={() => editor.chain().focus().setTextAlign('left').run()} > <span class="material-symbols-outlined text-2xl">

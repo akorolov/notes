@@ -2,7 +2,7 @@
 	import Calendar from '$lib/Calendar.svelte';
     import Settings from '$lib/Settings.svelte';
 	import Tiptap from '$lib/Tiptap.svelte'
-	import { noteList, CreateNewNote, UpdateNote, DeleteNote, GetNotesByUpdatedDate, GetNotesByCreatedDate, FilterNotesByTags } from '$lib/noteStore';
+	import { noteList, CreateNewNote, UpdateNote, DeleteNote, GetNotesByUpdatedDate, GetNotesByCreatedDate, FilterNotesByTags, TestNotes } from '$lib/noteStore';
 	import type { Note } from '$lib/noteStore';
     import { ListBox, ListBoxItem, filter } from '@skeletonlabs/skeleton';
 	import { popup } from '@skeletonlabs/skeleton';
@@ -10,10 +10,24 @@
 	import Fuse from 'fuse.js'
 	import { calendar_setting } from '$lib/settingStore';
     import Filter from '$lib/Filter.svelte';
-	import "$lib/database";
+    import Database from 'tauri-plugin-sql-api';
+    import { onMount } from 'svelte';
+
+
+	async function TestF() {
+		console.log("test function here")
+		const db = await Database.load("sqlite:notes2.db");
+		TestNotes(db, notes_shown)
+	}
+
+	TestF();
+
 
 	let notes_shown = $noteList
 	let active_note: Note = notes_shown[0]
+
+
+	
 
 	let editor_open = true
 	let calendar_open = false
