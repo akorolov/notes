@@ -10,24 +10,9 @@
 	import Fuse from 'fuse.js'
 	import { calendar_setting } from '$lib/settingStore';
     import Filter from '$lib/Filter.svelte';
-    import Database from 'tauri-plugin-sql-api';
-    import { onMount } from 'svelte';
-
-
-	async function TestF() {
-		console.log("test function here")
-		const db = await Database.load("sqlite:notes2.db");
-		TestNotes(db, notes_shown)
-	}
-
-	TestF();
-
 
 	let notes_shown = $noteList
 	let active_note: Note = notes_shown[0]
-
-
-	
 
 	let editor_open = true
 	let calendar_open = false

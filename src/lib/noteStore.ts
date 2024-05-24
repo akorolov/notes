@@ -1,7 +1,5 @@
 import { persisted } from "svelte-persisted-store";
 import { get } from "svelte/store";
-import { PullAllFromDatabase, WriteRecords } from "./database";
-import Database from "tauri-plugin-sql-api";
 
 export class Note {
     "title": string;
@@ -15,13 +13,6 @@ export class Note {
 
 export const maxID = persisted("maxNoteID6", 0)
 export const noteList = persisted("notelist6", CreateNewNote([]))
-
-export async function TestNotes(db: Database, notelist: Note[]) {
-    await WriteRecords(db, notelist)
-    console.log("running test notes")
-    PullAllFromDatabase(db).then(val => console.log(val))
-}
-
 
 export function CreateNewNote(notelist: Note[]) {
     let new_note = new Note()
